@@ -3,3 +3,5 @@ uvicorn
 tensorflow 
 pillow 
 python-multipart
+firebase-admin
+cryptography

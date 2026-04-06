@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import AuthPage from './pages/AuthPage';
 import HomePage from './pages/HomePage';
+import HistoryPage from './pages/HistoryPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user, isLoading } = useAuth();
@@ -41,6 +42,7 @@ function Router() {
             </ProtectedRoute>
           }>
             <Route index element={<HomePage />} />
+            <Route path="history" element={<HistoryPage />} />
           </Route>
         </Routes>
       </AuthProvider>

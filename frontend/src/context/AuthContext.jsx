@@ -6,7 +6,9 @@ import {
     onAuthStateChanged,
     updateProfile,
     updatePassword as firebaseUpdatePassword,
-    deleteUser
+    deleteUser,
+    EmailAuthProvider,
+    reauthenticateWithCredential
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -97,8 +99,13 @@ export const AuthProvider = ({ children }) => {
         await firebaseUpdatePassword(user, newPassword);
     };
 
-    const deleteAccount = async () => {
+    const deleteAccount = async (password) => {
         if (!user) throw new Error("No user logged in");
+
+        // Re-authenticate before sensitive operation
+        const credential = EmailAuthProvider.credential(user.email, password);
+        await reauthenticateWithCredential(user, credential);
+
         const uid = user.uid;
 
         // Delete Firestore Doc

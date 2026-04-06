@@ -7,15 +7,15 @@ const API_BASE_URL = 'http://127.0.0.1:8000';
 /**
  * Sends an image file to the backend for pneumonia prediction
  * @param {File} file - The image file to analyze
- * @returns {Promise<Object>} - The prediction result { score, label, threshold }
+ * @param {string} userId - The Firebase Auth UID of the current user
+ * @param {string} patientId - The patient ID entered by the user
+ * @returns {Promise<Object>} - The prediction result { score, label, threshold, image_url }
  */
-export const analyzeImage = async (file) => {
+export const analyzeImage = async (file, userId, patientId) => {
     const formData = new FormData();
     formData.append('file', file);
-    // The backend expects 'type=image/jpeg' or similar in the Content-Type header for the file part,
-    // but browsers handle this automatically when using FormData.
-    // The previous curl command showed: -F 'file=@xray-normal.jpeg;type=image/jpeg'
-    // Standard FormData append uses the file's type property automatically.
+    formData.append('user_id', userId);
+    formData.append('patient_id', patientId);
 
     try {
         const response = await fetch(`${API_BASE_URL}/predict`, {
@@ -34,6 +34,32 @@ export const analyzeImage = async (file) => {
         return data;
     } catch (error) {
         console.error('Error analyzing image:', error);
+        throw error;
+    }
+};
+
+/**
+ * Fetches the analysis history for a given user
+ * @param {string} userId - The Firebase Auth UID of the user
+ * @returns {Promise<Object>} - The history { history: [...] }
+ */
+export const fetchHistory = async (userId) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/history/${userId}`, {
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching history:', error);
         throw error;
     }
 };

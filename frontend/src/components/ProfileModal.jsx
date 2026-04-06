@@ -19,6 +19,7 @@ export default function ProfileModal({ isOpen, onClose }) {
         newPassword: '',
         confirmPassword: ''
     });
+    const [deletePassword, setDeletePassword] = useState('');
 
     useEffect(() => {
         if (user && userData) {
@@ -64,14 +65,21 @@ export default function ProfileModal({ isOpen, onClose }) {
     };
 
     const handleDeleteAccount = async () => {
+        if (!deletePassword) {
+            setMessage({ type: 'error', text: 'Please enter your password to confirm account deletion.' });
+            return;
+        }
         if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
             setLoading(true);
             try {
-                await deleteAccount();
-                // AuthContext will handle redirect on user null
+                await deleteAccount(deletePassword);
                 onClose();
             } catch (error) {
-                setMessage({ type: 'error', text: 'Failed to delete account. ' + error.message });
+                if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    setMessage({ type: 'error', text: 'Incorrect password. Please try again.' });
+                } else {
+                    setMessage({ type: 'error', text: 'Failed to delete account. ' + error.message });
+                }
                 setLoading(false);
             }
         }
@@ -210,10 +218,20 @@ export default function ProfileModal({ isOpen, onClose }) {
                                 <p className="text-slate-500 text-sm">
                                     Permanently remove your account and all of its data from our servers. This action is not reversible.
                                 </p>
+                                <div className="text-left">
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Confirm your password</label>
+                                    <input
+                                        type="password"
+                                        value={deletePassword}
+                                        onChange={e => setDeletePassword(e.target.value)}
+                                        className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:border-red-500 focus:ring-2 focus:ring-red-100 outline-none"
+                                        placeholder="Enter your password"
+                                    />
+                                </div>
                                 <button
                                     onClick={handleDeleteAccount}
-                                    disabled={loading}
-                                    className="w-full py-2.5 bg-white border border-red-500 text-red-600 hover:bg-red-50 rounded-xl font-medium transition-colors"
+                                    disabled={loading || !deletePassword}
+                                    className="w-full py-2.5 bg-white border border-red-500 text-red-600 hover:bg-red-50 rounded-xl font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {loading ? "Deleting..." : "Delete My Account"}
                                 </button>

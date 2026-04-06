@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Activity, LogOut, User, Settings, ChevronDown } from 'lucide-react';
+import { Activity, LogOut, User, Settings, ChevronDown, History } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileModal from './ProfileModal';
 
@@ -36,14 +36,32 @@ export default function Layout() {
         <div className="min-h-screen bg-slate-50 flex flex-col">
             <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 group">
-                        <div className="bg-primary-50 p-2 rounded-lg group-hover:bg-primary-100 transition-colors">
-                            <Activity className="w-6 h-6 text-primary-600" />
-                        </div>
-                        <span className="text-xl font-bold bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent">
-                            CareXray
-                        </span>
-                    </Link>
+                    <div className="flex items-center gap-6">
+                        <Link to="/" className="flex items-center gap-2 group">
+                            <div className="bg-primary-50 p-2 rounded-lg group-hover:bg-primary-100 transition-colors">
+                                <Activity className="w-6 h-6 text-primary-600" />
+                            </div>
+                            <span className="text-xl font-bold bg-gradient-to-r from-primary-700 to-primary-500 bg-clip-text text-transparent">
+                                CareXray
+                            </span>
+                        </Link>
+
+                        <nav className="hidden sm:flex items-center gap-1">
+                            <Link
+                                to="/"
+                                className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                            >
+                                Scan
+                            </Link>
+                            <Link
+                                to="/history"
+                                className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors flex items-center gap-1.5"
+                            >
+                                <History className="w-4 h-4" />
+                                History
+                            </Link>
+                        </nav>
+                    </div>
 
                     {user && (
                         <div className="relative" ref={dropdownRef}>

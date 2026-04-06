@@ -50,6 +50,22 @@ export default function ResultCard({ result }) {
                         This model is {confidencePercent}% confident in this diagnosis.
                     </p>
                 </div>
+
+                {result.heatmap_url && (
+                    <div className="mt-6 pt-6 border-t border-slate-100">
+                        <h4 className="text-sm font-medium text-slate-700 mb-3">AI Analysis Heatmap</h4>
+                        <div className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
+                            <img
+                                src={result.heatmap_url}
+                                alt="Grad-CAM Analysis Overlay"
+                                className="w-full h-auto object-contain max-h-[400px]"
+                            />
+                        </div>
+                        <p className="mt-2 text-xs text-slate-400">
+                            Red areas indicate where the AI model focused to make its prediction.
+                        </p>
+                    </div>
+                )}
             </div>
         </motion.div>
     );
