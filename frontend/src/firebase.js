@@ -2,16 +2,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// TODO: Replace the following with your app's Firebase project configuration
-// You can obtain these details from the Firebase Console > Project settings
 const firebaseConfig = {
-    apiKey: "AIzaSyD8AVOcQ1hBfCv5ce5Ow9cZsuqISAThxjM",
-    authDomain: "pneumonia-detection-8466e.firebaseapp.com",
-    projectId: "pneumonia-detection-8466e",
-    storageBucket: "pneumonia-detection-8466e.firebasestorage.app",
-    messagingSenderId: "786015001639",
-    appId: "1:786015001639:web:1b2ecf2c03266ac8eec202",
-    measurementId: "G-LDM673LB7L"
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
+    measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

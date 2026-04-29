@@ -1,8 +1,25 @@
 /**
  * API service for handling backend requests
  */
+import { auth } from '../firebase';
 
-const API_BASE_URL = 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+
+const getFirebaseIdToken = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+        throw new Error('You must be signed in to use the API.');
+    }
+
+    return currentUser.getIdToken();
+};
+
+const withAuthQuery = (url, token) => {
+    if (!url) return url;
+
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}token=${encodeURIComponent(token)}`;
+};
 
 /**
  * Sends an image file to the backend for pneumonia prediction
@@ -18,10 +35,12 @@ export const analyzeImage = async (file, userId, patientId) => {
     formData.append('patient_id', patientId);
 
     try {
+        const token = await getFirebaseIdToken();
         const response = await fetch(`${API_BASE_URL}/predict`, {
             method: 'POST',
             headers: {
                 'accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
             body: formData,
         });
@@ -31,7 +50,11 @@ export const analyzeImage = async (file, userId, patientId) => {
         }
 
         const data = await response.json();
-        return data;
+        return {
+            ...data,
+            image_url: withAuthQuery(data.image_url, token),
+            heatmap_url: withAuthQuery(data.heatmap_url, token),
+        };
     } catch (error) {
         console.error('Error analyzing image:', error);
         throw error;
@@ -45,10 +68,12 @@ export const analyzeImage = async (file, userId, patientId) => {
  */
 export const fetchHistory = async (userId) => {
     try {
+        const token = await getFirebaseIdToken();
         const response = await fetch(`${API_BASE_URL}/history/${userId}`, {
             method: 'GET',
             headers: {
                 'accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
         });
 
@@ -57,7 +82,14 @@ export const fetchHistory = async (userId) => {
         }
 
         const data = await response.json();
-        return data;
+        return {
+            ...data,
+            history: (data.history || []).map((item) => ({
+                ...item,
+                image_url: withAuthQuery(item.image_url, token),
+                heatmap_url: withAuthQuery(item.heatmap_url, token),
+            })),
+        };
     } catch (error) {
         console.error('Error fetching history:', error);
         throw error;

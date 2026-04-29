@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { X, User, Lock, Trash2, Save, Loader } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 export default function ProfileModal({ isOpen, onClose }) {
     const { user, userData, updateUserProfile, changePassword, deleteAccount } = useAuth();

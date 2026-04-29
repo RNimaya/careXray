@@ -1,9 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    @apply bg-slate-100;
+  }
+
   body {
-    @apply antialiased text-slate-900 bg-slate-50;
+    @apply min-h-screen antialiased text-slate-900 font-sans;
+    background:
+      radial-gradient(circle at top left, rgba(79, 124, 255, 0.16), transparent 28%),
+      radial-gradient(circle at top right, rgba(139, 92, 246, 0.14), transparent 30%),
+      linear-gradient(180deg, #f8fbff 0%, #eef4ff 45%, #f7f9fc 100%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(180deg, rgba(255, 255, 255, 0.45), transparent 85%);
+  }
+
+  #root {
+    @apply min-h-screen;
+  }
+
+  * {
+    @apply border-slate-200;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::selection {
+    background: rgba(79, 124, 255, 0.2);
   }
 }

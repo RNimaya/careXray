@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Lock, Mail, User, ArrowRight, Loader, Stethoscope } from 'lucide-react';
+import { Lock, Mail, User, ArrowRight, Loader, Stethoscope, ChevronDown } from 'lucide-react';
 
 export default function AuthForms() {
     const [isLogin, setIsLogin] = useState(true);
@@ -30,20 +30,23 @@ export default function AuthForms() {
                 await register(formData.name, formData.email, formData.password, formData.specialization);
             }
             navigate('/');
-        } catch (err) {
+        } catch {
             setError('Authentication failed. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    const inputClassName = 'w-full rounded-[22px] border border-slate-200 bg-white py-4 pl-14 pr-4 text-lg text-slate-700 outline-none transition-all placeholder:text-slate-400 focus:border-primary-300 focus:ring-4 focus:ring-primary-100';
+    const iconClassName = 'pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400';
+
     return (
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 w-full max-w-md mx-auto">
-            <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-slate-900 mb-2">
+        <div className="mx-auto w-full max-w-4xl rounded-[40px] border border-white/80 bg-white/92 px-6 py-8 shadow-[0_36px_90px_-46px_rgba(15,23,42,0.35)] backdrop-blur-xl sm:px-10 sm:py-10">
+            <div className="mx-auto max-w-3xl text-center mb-10">
+                <h2 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
                     {isLogin ? 'Welcome Back' : 'Create Account'}
                 </h2>
-                <p className="text-slate-500">
+                <p className="mt-4 text-lg text-slate-500">
                     {isLogin
                         ? 'Enter your credentials to access your dashboard'
                         : 'Sign up to start analyzing chest X-rays'
@@ -51,14 +54,14 @@ export default function AuthForms() {
                 </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-5">
                 {!isLogin && (
                     <div className="relative">
-                        <User className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+                        <User className={iconClassName} />
                         <input
                             type="text"
                             placeholder="Full Name"
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all placeholder:text-slate-400"
+                            className={inputClassName}
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             required
@@ -68,9 +71,10 @@ export default function AuthForms() {
 
                 {!isLogin && (
                     <div className="relative">
-                        <Stethoscope className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+                        <Stethoscope className={iconClassName} />
+                        <ChevronDown className="pointer-events-none absolute right-5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" />
                         <select
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all text-slate-600 bg-white"
+                            className={`${inputClassName} appearance-none pr-14 text-slate-600`}
                             value={formData.specialization}
                             onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
                         >
@@ -84,11 +88,11 @@ export default function AuthForms() {
                 )}
 
                 <div className="relative">
-                    <Mail className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+                    <Mail className={iconClassName} />
                     <input
                         type="email"
                         placeholder="Email Address"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all placeholder:text-slate-400"
+                        className={inputClassName}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
@@ -96,11 +100,11 @@ export default function AuthForms() {
                 </div>
 
                 <div className="relative">
-                    <Lock className="absolute left-3 top-3.5 w-5 h-5 text-slate-400" />
+                    <Lock className={iconClassName} />
                     <input
                         type="password"
                         placeholder="Password"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none transition-all placeholder:text-slate-400"
+                        className={inputClassName}
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                         required
@@ -108,7 +112,7 @@ export default function AuthForms() {
                 </div>
 
                 {error && (
-                    <div className="text-red-500 text-sm text-center bg-red-50 py-2 rounded-lg">
+                    <div className="rounded-2xl bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-500">
                         {error}
                     </div>
                 )}
@@ -116,7 +120,7 @@ export default function AuthForms() {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl shadow-lg shadow-primary-500/20 transition-all flex items-center justify-center gap-2 group disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="group flex w-full items-center justify-center gap-3 rounded-[22px] bg-primary-600 px-6 py-5 text-xl font-semibold text-white shadow-[0_24px_60px_-24px_rgba(47,102,246,0.55)] transition-all hover:-translate-y-0.5 hover:bg-primary-700 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                     {isSubmitting ? (
                         <Loader className="w-5 h-5 animate-spin" />
@@ -129,10 +133,10 @@ export default function AuthForms() {
                 </button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-8 text-center">
                 <button
                     onClick={() => setIsLogin(!isLogin)}
-                    className="text-slate-500 hover:text-primary-600 font-medium transition-colors text-sm"
+                    className="text-lg font-medium text-slate-500 transition-colors hover:text-primary-600"
                 >
                     {isLogin
                         ? "Don't have an account? Sign up"

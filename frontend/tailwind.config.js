@@ -8,15 +8,15 @@ export default {
     extend: {
       colors: {
         primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
+          50: '#eef4ff',
+          100: '#dbeafe',
+          500: '#4f7cff',
+          600: '#2f66f6',
+          700: '#224dc6',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },
