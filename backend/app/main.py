@@ -34,7 +34,11 @@ DECISION_THRESHOLDS = {
 def get_cors_origins() -> list[str]:
     configured_origins = os.getenv("CORS_ORIGINS")
     if configured_origins:
-        return [origin.strip() for origin in configured_origins.split(",") if origin.strip()]
+        return [
+            origin.strip().rstrip("/")
+            for origin in configured_origins.split(",")
+            if origin.strip()
+        ]
 
     return ["http://localhost:5173", "http://127.0.0.1:5173"]
 
