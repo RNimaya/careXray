@@ -3,7 +3,7 @@ import UploadZone from '../components/UploadZone.jsx';
 import ResultCard from '../components/ResultCard.jsx';
 import { analyzeImage } from '../services/api.js';
 import { useAuth } from '../context/AuthContext';
-import { Scan, RefreshCw, UserRound, ShieldCheck, BrainCircuit, Clock3, BadgeCheck } from 'lucide-react';
+import { Scan, RefreshCw, UserRound, ShieldCheck, BrainCircuit, Clock3, BadgeCheck, LockKeyhole } from 'lucide-react';
 
 export default function HomePage() {
     const { user } = useAuth();
@@ -51,10 +51,10 @@ export default function HomePage() {
     };
 
     const stats = [
-        { value: '10K+', label: 'Analyses Done', icon: BrainCircuit },
-        { value: '98.5%', label: 'Accuracy', icon: BadgeCheck },
+        { value: '97%', label: 'Accuracy', icon: BadgeCheck },
         { value: '24/7', label: 'Available', icon: Clock3 },
-        { value: 'Secure', label: 'HIPAA Ready', icon: ShieldCheck },
+        { value: 'Encrypted', label: 'Data Security', icon: LockKeyhole },
+        { value: 'Grad-CAM', label: 'Explainability', icon: BrainCircuit },
     ];
 
     return (
@@ -68,7 +68,7 @@ export default function HomePage() {
                     Pneumonia Detection
                 </h1>
                 <p className="mx-auto mt-4 max-w-2xl text-sm text-white/80 sm:text-base">
-                    Upload a chest X-ray image for fast, modern screening support with a cleaner workflow for clinicians.
+                    Upload a chest X-ray image for fast, modern screening support with a cleaner workflow.
                 </p>
             </div>
 

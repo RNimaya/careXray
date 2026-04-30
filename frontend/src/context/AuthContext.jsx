@@ -94,8 +94,11 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const changePassword = async (newPassword) => {
+    const changePassword = async (currentPassword, newPassword) => {
         if (!user) throw new Error("No user logged in");
+        // Re-authenticate with current password before updating
+        const credential = EmailAuthProvider.credential(user.email, currentPassword);
+        await reauthenticateWithCredential(user, credential);
         await firebaseUpdatePassword(user, newPassword);
     };
 

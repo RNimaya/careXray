@@ -157,7 +157,7 @@ export default function Layout() {
                 </div>
             </header>
 
-            <main className="relative z-10 flex-1 px-4 pb-10 pt-6 sm:px-6 lg:px-8">
+            <main className="relative flex-1 px-4 pb-10 pt-6 sm:px-6 lg:px-8">
                 <div className="mx-auto w-full max-w-7xl">
                     <Outlet />
                 </div>
@@ -166,7 +166,7 @@ export default function Layout() {
             <footer className="px-4 pb-6 sm:px-6 lg:px-8">
                 <div className="mx-auto flex max-w-7xl flex-col gap-2 rounded-[28px] border border-white/70 bg-white/75 px-6 py-5 text-center shadow-[0_18px_48px_-36px_rgba(15,23,42,0.35)] backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:text-left">
                     <p className="text-sm font-medium text-slate-500">
-                        Automatic pneumonia detection for faster triage support.
+                        CareXray - Automatic Pneumonia Detection
                     </p>
                     <p className="text-sm text-slate-400">
                         © {new Date().getFullYear()} CareXray

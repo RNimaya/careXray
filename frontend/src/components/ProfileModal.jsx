@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { X, User, Lock, Trash2, Save, Loader } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ProfileModal({ isOpen, onClose }) {
     const { user, userData, updateUserProfile, changePassword, deleteAccount } = useAuth();
@@ -16,6 +16,7 @@ export default function ProfileModal({ isOpen, onClose }) {
         specialization: ''
     });
     const [passData, setPassData] = useState({
+        currentPassword: '',
         newPassword: '',
         confirmPassword: ''
     });
@@ -47,18 +48,30 @@ export default function ProfileModal({ isOpen, onClose }) {
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
+        if (!passData.currentPassword) {
+            setMessage({ type: 'error', text: 'Please enter your current password.' });
+            return;
+        }
         if (passData.newPassword !== passData.confirmPassword) {
-            setMessage({ type: 'error', text: 'Passwords do not match' });
+            setMessage({ type: 'error', text: 'New passwords do not match.' });
+            return;
+        }
+        if (passData.newPassword.length < 6) {
+            setMessage({ type: 'error', text: 'New password must be at least 6 characters.' });
             return;
         }
         setLoading(true);
         setMessage({ type: '', text: '' });
         try {
-            await changePassword(passData.newPassword);
+            await changePassword(passData.currentPassword, passData.newPassword);
             setMessage({ type: 'success', text: 'Password changed successfully!' });
-            setPassData({ newPassword: '', confirmPassword: '' });
+            setPassData({ currentPassword: '', newPassword: '', confirmPassword: '' });
         } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to change password. ' + error.message });
+            if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                setMessage({ type: 'error', text: 'Incorrect current password. Please try again.' });
+            } else {
+                setMessage({ type: 'error', text: 'Failed to change password. ' + error.message });
+            }
         } finally {
             setLoading(false);
         }
@@ -180,6 +193,16 @@ export default function ProfileModal({ isOpen, onClose }) {
 
                         {activeTab === 'security' && (
                             <form onSubmit={handleChangePassword} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">Current Password</label>
+                                    <input
+                                        type="password"
+                                        value={passData.currentPassword}
+                                        onChange={e => setPassData({ ...passData, currentPassword: e.target.value })}
+                                        className="w-full px-4 py-2 rounded-xl border border-slate-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none"
+                                        placeholder="Enter your current password"
+                                    />
+                                </div>
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-1">New Password</label>
                                     <input

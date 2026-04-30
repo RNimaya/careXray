@@ -11,6 +11,7 @@ export default function HistoryPage() {
     const [error, setError] = useState(null);
     const [selectedItem, setSelectedItem] = useState(null);
     const [expandedImage, setExpandedImage] = useState(null);
+    const [expandedImageError, setExpandedImageError] = useState(false);
     const MotionDiv = motion.div;
 
     const loadHistory = useCallback(async () => {
@@ -104,12 +105,17 @@ export default function HistoryPage() {
         const confidence = parseFloat(item.confidence || 0);
         let confidencePercent = parseFloat((confidence * 100).toFixed(1));
         if (confidencePercent > 90) confidencePercent = 90;
-        
+
         const rawProb = parseFloat(item.pneumonia_probability || 0);
         const probPercent = parseFloat((rawProb * 100).toFixed(1));
-        
+
         const patientId = item.patient_id || 'N/A';
         return { ...status, confidencePercent, probPercent, patientId };
+    };
+
+    const openExpandedImage = (image) => {
+        setExpandedImageError(false);
+        setExpandedImage(image);
     };
 
     if (isLoading) {
@@ -247,7 +253,7 @@ export default function HistoryPage() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+                            className="fixed inset-0 z-[150] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
                             onClick={() => setSelectedItem(null)}
                         >
                             <MotionDiv
@@ -273,7 +279,7 @@ export default function HistoryPage() {
                                     <button
                                         type="button"
                                         className="flex-1 rounded-2xl overflow-hidden bg-black/5 aspect-[4/3] flex items-center justify-center relative group text-left"
-                                        onClick={() => selectedItem.image_url && setExpandedImage({ src: selectedItem.image_url, alt: 'Original chest X-ray', label: 'Original Scan' })}
+                                        onClick={() => selectedItem.image_url && openExpandedImage({ src: selectedItem.image_url, alt: 'Original chest X-ray', label: 'Original Scan' })}
                                     >
                                         <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                             Original Scan
@@ -302,7 +308,7 @@ export default function HistoryPage() {
                                         <button
                                             type="button"
                                             className="flex-1 rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 aspect-[4/3] flex items-center justify-center relative group text-left"
-                                            onClick={() => setExpandedImage({ src: selectedItem.heatmap_url, alt: 'AI heatmap analysis', label: 'AI Heatmap Analysis' })}
+                                            onClick={() => openExpandedImage({ src: selectedItem.heatmap_url, alt: 'AI heatmap analysis', label: 'AI Heatmap Analysis' })}
                                         >
                                             <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity z-10">
                                                 AI Heatmap Analysis
@@ -390,7 +396,7 @@ export default function HistoryPage() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4"
+                        className="fixed inset-0 z-[200] flex items-center justify-center bg-black/90 p-4"
                         onClick={() => setExpandedImage(null)}
                     >
                         <MotionDiv
@@ -414,11 +420,22 @@ export default function HistoryPage() {
                             </div>
 
                             <div className="flex-1 overflow-hidden rounded-2xl bg-black/40 flex items-center justify-center">
-                                <img
-                                    src={expandedImage.src}
-                                    alt={expandedImage.alt}
-                                    className="max-h-full max-w-full object-contain"
-                                />
+                                {expandedImageError ? (
+                                    <div className="flex flex-col items-center justify-center px-6 text-center text-slate-400">
+                                        <FileX2 className="w-12 h-12 mb-3" />
+                                        <p className="text-sm font-semibold text-slate-300">Image unavailable</p>
+                                        <p className="mt-1 max-w-sm text-xs">
+                                            This Grad-CAM image could not be loaded from storage.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <img
+                                        src={expandedImage.src}
+                                        alt={expandedImage.alt}
+                                        className="w-full h-full object-contain"
+                                        onError={() => setExpandedImageError(true)}
+                                    />
+                                )}
                             </div>
                         </MotionDiv>
                     </MotionDiv>
